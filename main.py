@@ -7,8 +7,10 @@ Created on Mon Nov 17 17:20:02 2025
 
 # main.py
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)  # <-- Habilita CORS para el panel web
 
 estado = {"led": "off"}
 API_KEY = "123ABC"
@@ -26,20 +28,18 @@ def get_status():
 
 @app.route("/set", methods=["POST"])
 def set_state():
-    data = request.get_json(silent=True)
-    print("DEBUG /set: request.data:", request.data)        # muestra raw body
-    print("DEBUG /set: parsed json:", data)                 # lo que parsea como JSON
-
+    data = request.json
     if not data:
         return jsonify({"error": "no json"}), 400
 
     key = data.get("key")
     if key != API_KEY:
-        print("DEBUG /set: key inválida:", key)
         return jsonify({"error": "unauthorized"}), 403
 
     if "led" in data:
         estado["led"] = data["led"]
-        print("DEBUG /set: nuevo estado led:", estado["led"])
 
     return jsonify({"ok": True, "estado": estado})
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=10000)
