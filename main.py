@@ -13,6 +13,11 @@ API_KEY = "123ABC"
 def home():
     return "API ESP32 lista!"
 
+@app.route("/panel")
+def panel():
+    return app.send_static_file("panel.html")
+
+
 @app.route("/status", methods=["GET"])
 def get_status():
     key = request.args.get("key")
@@ -37,3 +42,4 @@ def set_state():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
+
