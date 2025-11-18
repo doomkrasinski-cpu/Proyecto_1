@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<title>Panel ESP32</title>
+<style>
+    body {
+        background: #111;
+        color: white;
+        font-family: Arial;
+        text-align: center;
+        padding-top: 40px;
+    }
+
+    button {
+        font-size: 22px;
+        padding: 15px 30px;
+        margin: 10px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+    }
+
+    #onBtn { background: #00c853; }
+    #offBtn { background: #d50000; }
+    #status {
+        margin-top: 30px;
+        font-size: 20px;
+    }
+</style>
+</head>
+<body>
+
+<h1>Panel de Control ESP32</h1>
+<h3>Render API → ESP32</h3>
+
+<button id="onBtn">ENCENDER LED</button>
+<button id="offBtn">APAGAR LED</button>
+
+<div id="status">Estado del LED: <b>---</b></div>
+
+<script>
+const API_URL = "https://proyecto-1-6ia4.onrender.com/set";
+
+async function enviarComando(ledState) {
+    try {
+        const res = await fetch(API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                key: "123ABC",
+                led: ledState
+            })
+        });
+
+        const data = await res.json();
+        console.log(data);
+
+        document.querySelector("#status b").innerText = data.estado.led;
+    }
+    catch (e) {
+        document.querySelector("#status b").innerText = "ERROR";
+        console.error("Error enviando comando:", e);
+    }
+}
+
+// Eventos
+document.getElementById("onBtn").addEventListener("click", () => enviarComando("on"));
+document.getElementById("offBtn").addEventListener("click", () => enviarComando("off"));
+</script>
+
+</body>
+</html>
