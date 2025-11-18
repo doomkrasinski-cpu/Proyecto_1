@@ -10,10 +10,13 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-# Estado actual (LED, etc)
 estado = {"led": "off"}
 
-API_KEY = "123ABC"  # cambia esto
+API_KEY = "123ABC"
+
+@app.route("/")
+def home():
+    return "API ESP32 lista!"
 
 @app.route("/status", methods=["GET"])
 def get_status():
@@ -25,6 +28,9 @@ def get_status():
 @app.route("/set", methods=["POST"])
 def set_state():
     data = request.json
+    if not data:
+        return jsonify({"error": "no json"}), 400
+
     key = data.get("key")
     if key != API_KEY:
         return jsonify({"error": "unauthorized"}), 403
@@ -33,7 +39,3 @@ def set_state():
         estado["led"] = data["led"]
 
     return jsonify({"ok": True, "estado": estado})
-
-@app.route("/")
-def home():
-    return "API ESP32 lista!"
