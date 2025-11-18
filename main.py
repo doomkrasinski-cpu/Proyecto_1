@@ -1,16 +1,10 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Nov 17 17:20:02 2025
-
-@author: anton
-"""
-
-# main.py
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)  # <-- Habilita CORS para el panel web
+
+# MUY IMPORTANTE: permitir origen "null"
+CORS(app, resources={r"/*": {"origins": ["*", "null"]}})
 
 estado = {"led": "off"}
 API_KEY = "123ABC"
